@@ -1,0 +1,73 @@
+{
+  "repo": "rivet-rel-failover-dock",
+  "language": "Solidity",
+  "category": "Reliability",
+  "goal": "Develop a Solidity command-oriented project for failover scenarios with bounded scenario files, conflict explanations, and bounded memory input sets.",
+  "review_model": {
+    "terms": [
+      "budget pressure",
+      "failure width",
+      "recovery gap",
+      "runbook drift"
+    ],
+    "lanes": [
+      "ship",
+      "watch",
+      "hold"
+    ],
+    "score": "signal * 2 + slack + confidence - drag * 3",
+    "purpose": "surface the domain-specific cases that need the most careful review"
+  },
+  "cases": [
+    {
+      "name": "baseline",
+      "focus": "budget pressure",
+      "signal": 46,
+      "slack": 54,
+      "drag": 21,
+      "confidence": 70,
+      "score": 153,
+      "lane": "ship"
+    },
+    {
+      "name": "stress",
+      "focus": "failure width",
+      "signal": 54,
+      "slack": 52,
+      "drag": 9,
+      "confidence": 88,
+      "score": 221,
+      "lane": "ship"
+    },
+    {
+      "name": "edge",
+      "focus": "recovery gap",
+      "signal": 47,
+      "slack": 41,
+      "drag": 31,
+      "confidence": 68,
+      "score": 110,
+      "lane": "watch"
+    },
+    {
+      "name": "recovery",
+      "focus": "runbook drift",
+      "signal": 74,
+      "slack": 45,
+      "drag": 13,
+      "confidence": 88,
+      "score": 242,
+      "lane": "ship"
+    },
+    {
+      "name": "stale",
+      "focus": "budget pressure",
+      "signal": 65,
+      "slack": 50,
+      "drag": 10,
+      "confidence": 55,
+      "score": 205,
+      "lane": "ship"
+    }
+  ]
+}

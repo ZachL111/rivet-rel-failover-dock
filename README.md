@@ -1,69 +1,40 @@
 # rivet-rel-failover-dock
 
-`rivet-rel-failover-dock` explores reliability in Solidity. The repository keeps the core rule set compact, then surrounds it with examples that show how the decisions move.
+`rivet-rel-failover-dock` is a Solidity project in reliability. Its focus is to develop a Solidity command-oriented project for failover scenarios with bounded scenario files, conflict explanations, and bounded memory input sets.
 
-## Rivet Rel Failover Dock Notes
+## Why I Keep It Small
 
-The quickest review path is the verifier first, then the fixtures, then the operations note. That order makes it easy to see whether the code, data, and explanation still agree.
+I want this repository to be useful as a quick reading exercise: fixtures first, implementation second, verifier last.
 
-## Why This Exists
+## Rivet Rel Failover Dock Review Notes
 
-This is not a wrapper around a service. It is a self-contained project that shows how the model behaves when demand, capacity, latency, risk, and weight move in different directions.
+The first comparison I would make is `runbook drift` against `recovery gap` because it shows where the rule is most opinionated.
 
-## Example Scenarios
+## Included Behavior
 
-`degraded` is the first example I would inspect because it lands on the `review` path with a score of -16. The broader file also keeps `degraded` at -16 and `surge` at 247, which gives the model a useful low-to-high spread.
+- `fixtures/domain_review.csv` adds cases for budget pressure and failure width.
+- `metadata/domain-review.json` records the same cases in structured form.
+- `config/review-profile.json` captures the read order and the two review questions.
+- `examples/rivet-rel-failover-walkthrough.md` walks through the case spread.
+- The Solidity code includes a review path for `runbook drift` and `recovery gap`.
+- `docs/field-notes.md` explains the strongest and weakest cases.
 
-## Implementation Notes
+## Internal Model
 
-The core is a scoring model over demand, capacity, latency, risk, and weight. That keeps failure windows, retry budgets, and runbook checks in one explicit decision path. The threshold is 176, with risk penalty 4, latency penalty 4, and weight bonus 6. The Solidity project uses Foundry tests and pure contract functions so invariants are cheap to exercise.
+The repository has two validation layers: the original compact policy fixture and the domain review fixture. They are separate so one can change without hiding failures in the other.
 
-## Feature Notes
+The Solidity checks add a pure review lens and Foundry coverage.
 
-- Models failure windows with deterministic scoring and explicit review decisions.
-- Uses fixture data to keep retry budgets changes visible in code review.
-- Includes extended examples for runbook checks, including `surge` and `degraded`.
-- Documents recovery paths tradeoffs in `docs/operations.md`.
-- Runs locally with a single verification command and no external credentials.
-
-## Try It
+## Try It Locally
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify.ps1
 ```
 
-This runs the language-level build or test path against the compact fixture set.
+## Validation
 
-## Tests
+The check exercises the source code and the review fixture. `recovery` is the high score at 242; `edge` is the low score at 110.
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/audit.ps1
-```
+## Scope
 
-The audit command checks repository structure and README constraints before it delegates to the verifier.
-
-## Code Tour
-
-- `src`: primary implementation
-- `test`: language test directory
-- `fixtures`: compact golden scenarios
-- `examples`: expanded scenario set
-- `metadata`: project constants and verification metadata
-- `docs`: operations and extension notes
-- `scripts`: local verification and audit commands
-- `foundry.toml`: Foundry project configuration
-
-## Roadmap
-
-- Add a loader for `examples/extended_cases.csv` and promote selected cases into the language test suite.
-- Add a short report command that prints the score breakdown for a single scenario.
-- Add malformed input fixtures so the failure path is as visible as the happy path.
-- Add one more reliability fixture that focuses on a malformed or borderline input.
-
-## Boundaries
-
-The repository favors determinism over breadth. It does not pull live data, keep secrets, or depend on network access for verification.
-
-## Local Setup
-
-The only required setup is the local Solidity toolchain. After cloning, stay in the repo root so fixture paths resolve correctly.
+No external service is required. A deeper version would add more negative cases and a clearer boundary around invalid input.
